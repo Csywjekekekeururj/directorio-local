@@ -1,5 +1,3 @@
-
-
 'use client';
 import { useState } from 'react';
 import { Search, MapPin, Phone, MessageCircle, Calendar, Coffee, Scissors, BookOpen, Utensils, ShoppingBag } from 'lucide-react';
