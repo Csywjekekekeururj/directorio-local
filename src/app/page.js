@@ -1,8 +1,9 @@
+
+
 'use client';
 import { useState } from 'react';
 import { Search, MapPin, Phone, MessageCircle, Calendar, Coffee, Scissors, BookOpen, Utensils, ShoppingBag } from 'lucide-react';
 
-// Lista de negocios demo en Tapachula
 const negociosIniciales = [
   {
     id: 1,
@@ -103,7 +104,6 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8">
-      {/* Encabezado */}
       <header className="max-w-5xl mx-auto text-center py-8">
         <span className="bg-emerald-500/10 text-emerald-400 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-emerald-500/20">
           Tapachula, Chiapas
@@ -116,7 +116,6 @@ export default function Home() {
         </p>
       </header>
 
-      {/* Buscador y Filtros */}
       <section className="max-w-5xl mx-auto mb-8 space-y-4">
         <div className="relative">
           <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
@@ -129,7 +128,6 @@ export default function Home() {
           />
         </div>
 
-        {/* Botones de Categorías */}
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
           {categorias.map((cat) => (
             <button
@@ -147,7 +145,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Grid de Negocios */}
       <section className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {negociosFiltrados.map((negocio) => {
           const Icono = negocio.icono;
@@ -184,7 +181,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Botón Acción a WhatsApp */}
               <a
                 href={`https://wa.me/${negocio.whatsapp}?text=Hola,%20vi%20su%20negocio%20en%20el%20Directorio%20Local`}
                 target="_blank"
