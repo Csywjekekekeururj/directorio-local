@@ -169,3 +169,77 @@ export default function Home() {
     </main>
   );
 }
+const nuevoNegocio = {
+  // ==========================================
+  // 1. INFORMACIÓN PUBLICITARIA (Vista Cliente)
+  // ==========================================
+  id: "abarrotes-y-novedades-el-soconusco",
+  nombre: "Abarrotes y Novedades El Soconusco",
+  categoria: "Abarrotes y Comercio",
+  esDestacado: true,
+  slogan: "Todo para tu hogar a los mejores precios de Tapachula",
+  descripcion: "Surtido completo en abarrotes, frutas, verduras frescas y artículos del hogar. Atendido por la familia con la mejor calidad y entrega a domicilio.",
+  logotipo: "https://images.unsplash.com/photo-1578916171728-46686eac8d58?auto=format&fit=crop&q=80&w=300",
+  portada: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=1000",
+  
+  contacto: {
+    telefono: "9621234567",
+    whatsapp: "529621234567",
+    direccion: "Central Sur #45, Col. Centro, Tapachula, Chiapas",
+    horario: "Lunes a Sábado: 7:00 AM - 9:00 PM | Domingo: 8:00 AM - 4:00 PM",
+    coordenadas: { lat: 14.9081, lng: -92.2618 }
+  },
+
+  promocionVigente: {
+    titulo: "10% de Descuento en Tu Primera Compra",
+    codigo: "TAPACHULA10",
+    condiciones: "Aplica en compras mayores a $200 MXN mencionando el directorio."
+  },
+
+  // ==========================================
+  // 2. BASE DE DATOS INTERNA Y GESTIÓN (Vista Administrador)
+  // ==========================================
+  gestionInterna: {
+    // --- Registro de Inventario ---
+    inventario: [
+      { id: "PROD-001", nombre: "Frijol Negro 1kg", categoria: "Granos", stock: 120, precioCosto: 24.50, precioVenta: 32.00 },
+      { id: "PROD-002", nombre: "Arroz Súper Extra 1kg", categoria: "Granos", stock: 85, precioCosto: 18.00, precioVenta: 25.00 },
+      { id: "PROD-003", nombre: "Aceite Comestible 800ml", categoria: "Abarrotes", stock: 42, precioCosto: 31.00, precioVenta: 40.00 },
+      { id: "PROD-004", nombre: "Café de Olla Tapachula 500g", categoria: "Café", stock: 15, precioCosto: 65.00, precioVenta: 95.00 }
+    ],
+
+    // --- Registros de Cortes de Día (Caja) ---
+    cortesDeCaja: [
+      {
+        fecha: "2026-10-11",
+        fondoInicial: 1000.00,
+        ventasEfectivo: 4850.50,
+        ventasTransferencia: 1200.00,
+        gastosCajaChica: 350.00, // Compras menores de insumos o bolsas
+        totalVentasNetas: 5700.50,
+        efectivoFinalEnCaja: 5500.50,
+        estatusCorte: "Cuadrado", // Cuadrado / Faltante / Sobrante
+        observaciones: "Día con bastante flujo de clientes por la tarde."
+      },
+      {
+        fecha: "2026-10-10",
+        fondoInicial: 1000.00,
+        ventasEfectivo: 3900.00,
+        ventasTransferencia: 850.00,
+        gastosCajaChica: 120.00,
+        totalVentasNetas: 4630.00,
+        efectivoFinalEnCaja: 4780.00,
+        estatusCorte: "Cuadrado",
+        observaciones: "Corte realizado a las 9:05 PM."
+      }
+    ],
+
+    // --- Métricas de Desempeño Comercial ---
+    metricas: {
+      visitasEnDirectorio: 342,
+      clicsAWhatsApp: 89,
+      calificacionPromedio: 4.8,
+      totalReseñas: 27
+    }
+  }
+};
