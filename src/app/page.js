@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Search, MapPin, Phone, MessageCircle, Calendar, Coffee, Scissors, BookOpen, Utensils } from 'lucide-react';
+import { Search, MapPin, Phone, MessageCircle, Calendar, Coffee, Scissors, BookOpen, Utensils, ShoppingBag } from 'lucide-react';
 
 // Lista de negocios demo en Tapachula
 const negociosIniciales = [
@@ -47,10 +47,48 @@ const negociosIniciales = [
     whatsapp: "529621234570",
     accion: "Hacer Pedido",
     destacado: false,
+  },
+  {
+    id: 5,
+    nombre: "Abarrotes y Novedades El Soconusco",
+    categoria: "Abarrotes",
+    icono: ShoppingBag,
+    descripcion: "Surtido completo en abarrotes, frutas, verduras frescas y artículos del hogar. Atendido por la familia con entrega a domicilio.",
+    direccion: "Central Sur #45, Col. Centro, Tapachula",
+    whatsapp: "529621234567",
+    accion: "Hacer Pedido",
+    destacado: true,
+    gestionInterna: {
+      inventario: [
+        { id: "PROD-001", nombre: "Frijol Negro 1kg", categoria: "Granos", stock: 120, precioCosto: 24.50, precioVenta: 32.00 },
+        { id: "PROD-002", nombre: "Arroz Súper Extra 1kg", categoria: "Granos", stock: 85, precioCosto: 18.00, precioVenta: 25.00 },
+        { id: "PROD-003", nombre: "Aceite Comestible 800ml", categoria: "Abarrotes", stock: 42, precioCosto: 31.00, precioVenta: 40.00 },
+        { id: "PROD-004", nombre: "Café de Olla Tapachula 500g", categoria: "Café", stock: 15, precioCosto: 65.00, precioVenta: 95.00 }
+      ],
+      cortesDeCaja: [
+        {
+          fecha: "2026-10-11",
+          fondoInicial: 1000.00,
+          ventasEfectivo: 4850.50,
+          ventasTransferencia: 1200.00,
+          gastosCajaChica: 350.00,
+          totalVentasNetas: 5700.50,
+          efectivoFinalEnCaja: 5500.50,
+          estatusCorte: "Cuadrado",
+          observaciones: "Día con bastante flujo de clientes por la tarde."
+        }
+      ],
+      metricas: {
+        visitasEnDirectorio: 342,
+        clicsAWhatsApp: 89,
+        calificacionPromedio: 4.8,
+        totalReseñas: 27
+      }
+    }
   }
 ];
 
-const categorias = ["Todos", "Cafeterías", "Papelerías", "Barberías", "Restaurantes"];
+const categorias = ["Todos", "Cafeterías", "Papelerías", "Barberías", "Restaurantes", "Abarrotes"];
 
 export default function Home() {
   const [busqueda, setBusqueda] = useState('');
@@ -58,7 +96,7 @@ export default function Home() {
 
   const negociosFiltrados = negociosIniciales.filter((negocio) => {
     const coincideNombre = negocio.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-                          negocio.descripcion.toLowerCase().includes(busqueda.toLowerCase());
+                           negocio.descripcion.toLowerCase().includes(busqueda.toLowerCase());
     const coincideCat = categoriaSel === 'Todos' || negocio.categoria === categoriaSel;
     return coincideNombre && coincideCat;
   });
@@ -169,4 +207,3 @@ export default function Home() {
     </main>
   );
 }
-
