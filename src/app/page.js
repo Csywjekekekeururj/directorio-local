@@ -129,12 +129,15 @@ footer{padding:28px 0 100px;text-align:center;color:var(--mute);font-size:15px}
 
 /* ============ CONFIGURA AQUÍ ============ */
 const NEGOCIO = {
-  nombre: "Sabor Tapachulteco",
+  nombre: "El Buen Sabor",
+  lema: "La comida más rica de todo SC",
   whatsapp: "", // formato 529621234567 (52 + 10 dígitos). Vacío hasta que el cliente lo dé
   instagram: "", // ej: https://instagram.com/usuario
   facebook: "",
-  maps: "", // link de Google Maps
-  direccion: "Tapachula, Chiapas",
+  maps: "https://www.google.com/maps/search/?api=1&query=Calle+Puebla+8+Barrio+San+Ramon+San+Cristobal+de+las+Casas", // cambia por el link exacto del negocio
+  direccion: "Calle Puebla #8, Barrio de San Ramón",
+  referencia: "A un costado del mercadito de San Ramón", // agrega aquí otra referencia cuando Iván la diga (ej: "Frente a ...")
+  referencia2: "",
   horarioTexto: "Por definir",
   abre: null, // hora de apertura (0-23), ej: 9. Si es null no se muestra Abierto/Cerrado
   cierra: null, // hora de cierre (0-23), ej: 21
@@ -146,7 +149,7 @@ const NEGOCIO = {
 const U = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=70`;
 const PLATILLOS = [
   { id: 1, nombre: "Aguachile Especial", desc: "Camarón fresco bañado en salsa de la casa con pepino y cebolla morada.", precio: 160, cat: "Mariscos", img: U("photo-1669218687080-3995e806f302"), emoji: "🦐", picoso: 3, tag: "Favorito de la casa", destacado: true },
-  { id: 2, nombre: "Platillo Mixto", desc: "Carne asada, chorizo, longaniza, guarnición de frijoles y totopos.", precio: 185, cat: "Carnes", img: U("photo-1555939594-58d7cb561ad1"), emoji: "🍖", picoso: 1, tag: "El más completo" },
+  { id: 2, nombre: "Platillo Mixto", desc: "Carne asada, chorizo y longaniza con guarnición de frijoles y totopos.", precio: 185, cat: "Carnes", img: U("photo-1555939594-58d7cb561ad1"), emoji: "🍖", picoso: 1, tag: "El más completo" },
   { id: 3, nombre: "Carne Asada", desc: "Corte asado al carbón acompañado de cebollitas asadas y chiles toreados.", precio: 150, cat: "Carnes", img: U("photo-1594041680534-e8c8cdebd659"), emoji: "🥩", picoso: 1 },
   { id: 4, nombre: "Mojarra Frita", desc: "Mojarra doradita al término perfecto con ensalada fresca y arroz.", precio: 140, cat: "Mariscos", img: U("photo-1665401015549-712c0dc5ef85"), emoji: "🐟", picoso: 0 },
   { id: 5, nombre: "Milanesa Rellena", desc: "Empanizada y rellena de jamón y queso fundido con papas a la francesa.", precio: 135, cat: "Platillos", img: U("photo-1580217593608-61931cefc821"), emoji: "🧀", picoso: 0 },
@@ -306,8 +309,8 @@ export default function Home() {
 
       <main id="inicio">
         <div className="hero"><div className="wrap">
-          <h1>Comida de fonda, directo a tu WhatsApp</h1>
-          <p>Arma tu pedido aquí, toca un botón y nosotros recibimos todo: platillos, total y a qué hora lo quieres. Sin llamadas ni vueltas.</p>
+          <h1>{NEGOCIO.lema}</h1>
+          <p>Pide en El Buen Sabor: arma tu pedido aquí, toca un botón y nosotros recibimos todo: platillos, total y a qué hora lo quieres. Sin llamadas ni vueltas.</p>
           <div className="cta"><a className="btn" href="#menu">Ver el menú</a><a className="btn ghost" href="#como">Cómo pedir</a></div>
         </div></div>
         <div className="serape" aria-hidden="true" />
@@ -335,7 +338,7 @@ export default function Home() {
         </div></section>
 
         <section id="menu" style={{ paddingTop: 0 }}>
-          <div className="wrap"><h2>El menú</h2><p className="sub">Toca “Agregar” y tu pedido se va armando solito.</p></div>
+          <div className="wrap"><h2>El menú</h2><p className="sub">Toca “Agregar” y tu pedido se va armando solito. Muy pronto vamos a sumar más platillos.</p></div>
           <div className="barra"><div className="wrap">
             <input type="search" placeholder="Busca: aguachile, costilla, milanesa" aria-label="Buscar platillo" value={q} onChange={(e) => setQ(e.target.value)} />
             <div className="chips">{cats.map((c) => <button key={c} className="chip" aria-pressed={c === cat} onClick={() => setCat(c)}>{c}</button>)}</div>
@@ -368,7 +371,7 @@ export default function Home() {
         <section id="contacto" className="alt"><div className="wrap">
           <h2>Contacto</h2>
           <div className="contacto">
-            <div><h3>Dónde estamos</h3><p>{NEGOCIO.direccion}</p>{NEGOCIO.maps && <a href={NEGOCIO.maps} target="_blank" rel="noopener noreferrer">Abrir en Google Maps</a>}</div>
+            <div><h3>Dónde estamos</h3><p>{NEGOCIO.direccion}</p><p style={{ color: "var(--oro)", fontWeight: 800 }}>{NEGOCIO.referencia}</p>{NEGOCIO.referencia2 && <p style={{ color: "var(--oro)", fontWeight: 800 }}>{NEGOCIO.referencia2}</p>}{NEGOCIO.maps && <a href={NEGOCIO.maps} target="_blank" rel="noopener noreferrer">Abrir en Google Maps</a>}</div>
             <div><h3>Horario</h3><p>{NEGOCIO.horarioTexto}</p></div>
             <div><h3>Redes</h3>
               <p>{NEGOCIO.whatsapp ? <a href={`https://wa.me/${NEGOCIO.whatsapp}`} target="_blank" rel="noopener noreferrer">WhatsApp</a> : "WhatsApp: por definir"}</p>
@@ -379,7 +382,7 @@ export default function Home() {
         </div></section>
       </main>
 
-      <footer><div className="serape" aria-hidden="true" style={{ marginBottom: 24 }} />Hecho en Tapachula con sabor y con chile.</footer>
+      <footer><div className="serape" aria-hidden="true" style={{ marginBottom: 24 }} />{NEGOCIO.nombre}. {NEGOCIO.lema}. {NEGOCIO.direccion}, {NEGOCIO.referencia.toLowerCase()}.</footer>
 
       {cuenta > 0 && !open && <button className="fab" onClick={() => setOpen(true)}>Mi pedido ({cuenta}) · {money(total)}</button>}
       {toast && <div className="toast" role="status">{toast}</div>}
