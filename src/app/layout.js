@@ -11,17 +11,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "El Buen Sabor · Tapachula",
-  description: "Restaurante y mariscos en el Barrio de San Ramón",
-  verification: {
-    google: "fVy5HQqEnuw5s4AJ00j9bT4gdK0E7dDlBXwSwr0y1Ig",
-  },
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      <head>
+        <meta name="google-site-verification" content="fVy5HQqEnuw5s4AJ00j9bT4gdK0E7dDlBXwSwr0y1Ig" />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
       </body>
