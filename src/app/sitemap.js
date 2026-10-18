@@ -1,7 +1,7 @@
 export default function sitemap() {
   return [
     {
-      url: 'https://directorio-local.vercel.app', // Cambia por tu dominio exacto de Vercel
+      url: 'https://directorio-local-e2bd.vercel.app',
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
