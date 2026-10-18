@@ -1,357 +1,383 @@
-'use client';
-import { useState } from 'react';
-import { Search, MapPin, Phone, MessageCircle, Calendar, Coffee, Scissors, BookOpen, Utensils, ShoppingBag, Database, Package, DollarSign, BarChart3, X } from 'lucide-react';
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurante "El Buen Sabor" · San Ramón</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
 
-const negociosIniciales = [
-  {
-    id: 1,
-    nombre: "Mono Caballero Coffee",
-    categoria: "Cafeterías",
-    icono: Coffee,
-    descripcion: "Café de especialidad, bebidas frías, postres y el mejor ambiente en el centro de Tapachula.",
-    direccion: "Central Sur #12, Col. Centro, Tapachula",
-    whatsapp: "529621234567",
-    accion: "Ver Menú Digital",
-    destacado: true,
-  },
-  {
-    id: 2,
-    nombre: "Papelería El Cubo",
-    categoria: "Papelerías",
-    icono: BookOpen,
-    descripcion: "Surtido completo en útiles escolares, copias, impresiones y artículos de oficina.",
-    direccion: "4a Av. Norte #45, Tapachula",
-    whatsapp: "529621234568",
-    accion: "Pedir por WhatsApp",
-    destacado: false,
-  },
-  {
-    id: 3,
-    nombre: "Barbería El Imperio",
-    categoria: "Barberías",
-    icono: Scissors,
-    descripcion: "Cortes modernos, arreglo de barba y perfilado. Reserva tu lugar sin filas.",
-    direccion: "8a Calle Oriente #10, Tapachula",
-    whatsapp: "529621234569",
-    accion: "Agendar Cita",
-    destacado: true,
-  },
-  {
-    id: 4,
-    nombre: "Taquería El Huasteco",
-    categoria: "Restaurantes",
-    icono: Utensils,
-    descripcion: "Los mejores tacos al pastor y carne asada con servicio a domicilio rápido.",
-    direccion: "Central Norte #88, Tapachula",
-    whatsapp: "529621234570",
-    accion: "Hacer Pedido",
-    destacado: false,
-  },
-  {
-    id: 5,
-    nombre: "Abarrotes y Novedades El Soconusco",
-    categoria: "Abarrotes",
-    icono: ShoppingBag,
-    descripcion: "Surtido completo en abarrotes, frutas, verduras frescas y artículos del hogar. Atendido por la familia con entrega a domicilio.",
-    direccion: "Central Sur #45, Col. Centro, Tapachula",
-    whatsapp: "529621234567",
-    accion: "Hacer Pedido",
-    destacado: true,
-    gestionInterna: {
-      inventario: [
-        { id: "PROD-001", nombre: "Frijol Negro 1kg", categoria: "Granos", stock: 120, precioCosto: 24.50, precioVenta: 32.00 },
-        { id: "PROD-002", nombre: "Arroz Súper Extra 1kg", categoria: "Granos", stock: 85, precioCosto: 18.00, precioVenta: 25.00 },
-        { id: "PROD-003", nombre: "Aceite Comestible 800ml", categoria: "Abarrotes", stock: 42, precioCosto: 31.00, precioVenta: 40.00 },
-        { id: "PROD-004", nombre: "Café de Olla Tapachula 500g", categoria: "Café", stock: 15, precioCosto: 65.00, precioVenta: 95.00 }
-      ],
-      cortesDeCaja: [
-        {
-          fecha: "2026-10-11",
-          fondoInicial: 1000.00,
-          ventasEfectivo: 4850.50,
-          ventasTransferencia: 1200.00,
-          gastosCajaChica: 350.00,
-          totalVentasNetas: 5700.50,
-          efectivoFinalEnCaja: 5500.50,
-          estatusCorte: "Cuadrado",
-          observaciones: "Día con bastante flujo de clientes por la tarde."
-        }
-      ],
-      metricas: {
-        visitasEnDirectorio: 342,
-        clicsAWhatsApp: 89,
-        calificacionPromedio: 4.8,
-        totalReseñas: 27
-      }
-    }
-  }
-];
-
-const categorias = ["Todos", "Cafeterías", "Papelerías", "Barberías", "Restaurantes", "Abarrotes"];
-
-export default function Home() {
-  const [busqueda, setBusqueda] = useState('');
-  const [categoriaSel, setCategoriaSel] = useState('Todos');
-  const [modalNegocio, setModalNegocio] = useState(null);
-  const [pestanaActiva, setPestanaActiva] = useState('inventario');
-
-  const negociosFiltrados = negociosIniciales.filter((negocio) => {
-    const coincideNombre = negocio.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-                           negocio.descripcion.toLowerCase().includes(busqueda.toLowerCase());
-    const coincideCat = categoriaSel === 'Todos' || negocio.categoria === categoriaSel;
-    return coincideNombre && coincideCat;
-  });
-
-  return (
-    <main className="min-h-screen bg-slate-900 text-slate-100 p-4 md:p-8">
-      <header className="max-w-5xl mx-auto text-center py-8">
-        <span className="bg-emerald-500/10 text-emerald-400 text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full border border-emerald-500/20">
-          Tapachula, Chiapas
-        </span>
-        <h1 className="text-4xl md:text-5xl font-black mt-3 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-          Directorio Comercial Tapachula
-        </h1>
-        <p className="text-slate-400 text-sm md:text-base mt-2 max-w-xl mx-auto">
-          Encuentra los mejores negocios locales, consulta sus menús, servicios y contacta directo por WhatsApp.
-        </p>
-      </header>
-
-      <section className="max-w-5xl mx-auto mb-8 space-y-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Buscar por negocio, servicio o producto..."
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500 transition-colors"
-          />
+  <!-- Barra superior -->
+  <header class="sticky top-0 z-40 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 py-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-orange-500/20">
+          BS
         </div>
-
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-          {categorias.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoriaSel(cat)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                categoriaSel === cat
-                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-lg shadow-emerald-500/20'
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div>
+          <h1 class="font-display font-black tracking-tight text-lg text-white">El Buen Sabor</h1>
+          <p class="text-[11px] text-orange-400 font-medium">Barrio de San Ramón</p>
         </div>
-      </section>
+      </div>
 
-      <section className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-        {negociosFiltrados.map((negocio) => {
-          const Icono = negocio.icono;
-          return (
-            <div
-              key={negocio.id}
-              className="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-6 hover:border-emerald-500/50 transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
-                      <Icono className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-white">{negocio.nombre}</h3>
-                      <span className="text-xs text-slate-400">{negocio.categoria}</span>
-                    </div>
-                  </div>
-                  {negocio.destacado && (
-                    <span className="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-md font-semibold uppercase">
-                      Destacado
-                    </span>
-                  )}
-                </div>
+      <a href="#contacto" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all shadow-md shadow-orange-500/20">
+        Ubicación & Pedidos
+      </a>
+    </div>
+  </header>
 
-                <p className="text-slate-300 text-sm mb-4 leading-relaxed">
-                  {negocio.descripcion}
-                </p>
+  <!-- Hero con impacto visual -->
+  <section class="relative overflow-hidden py-16 lg:py-24 px-6 border-b border-slate-800/80">
+    <div class="absolute inset-0 z-0 opacity-30 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80')"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent z-1"></div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-400 mb-6">
-                  <MapPin className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>{negocio.direccion}</span>
-                </div>
-              </div>
+    <div class="relative z-10 max-w-4xl mx-auto text-center space-y-6">
+      <span class="inline-block bg-orange-500/10 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+        🍤 ¡La comida más rica de todo San Ramón!
+      </span>
+      <h2 class="text-4xl sm:text-6xl font-display font-black tracking-tight text-white leading-none">
+        Sabor casero, mariscos y cortes <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">al mero punto</span>.
+      </h2>
+      <p class="text-slate-300 text-base sm:text-lg max-w-xl mx-auto font-medium">
+        Disfruta de nuestros aguachiles frescos, carnes asadas y las famosas camaroneras bien frías. Pide directo a domicilio o para llevar.
+      </p>
+    </div>
+  </section>
 
-              <div className="space-y-2">
-                {negocio.gestionInterna && (
-                  <button
-                    onClick={() => {
-                      setModalNegocio(negocio);
-                      setPestanaActiva('inventario');
-                    }}
-                    className="w-full bg-slate-700/60 hover:bg-slate-700 text-cyan-400 font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 border border-cyan-500/30 transition-colors text-sm"
-                  >
-                    <Database className="w-4 h-4" />
-                    <span>Ver Gestión Interna (Base de Datos)</span>
-                  </button>
-                )}
+  <!-- Menú Interactivo con Tarjetas Perronas -->
+  <main class="max-w-6xl mx-auto px-6 py-12 space-y-16">
 
-                <a
-                  href={`https://wa.me/${negocio.whatsapp}?text=Hola,%20vi%20su%20negocio%20en%20el%20Directorio%20Local`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-colors"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  <span>{negocio.accion}</span>
-                </a>
-              </div>
+    <div class="space-y-4">
+      <div class="flex justify-between items-end">
+        <div>
+          <span class="text-xs font-bold text-orange-400 uppercase tracking-widest">Nuestro Menú</span>
+          <h3 class="text-3xl font-display font-black text-white">Especialidades de la Casa</h3>
+        </div>
+        <span class="text-xs text-slate-400 font-medium hidden sm:block">Selecciona tus platillos para armar tu pedido</span>
+      </div>
+
+      <!-- Cuadrícula de Platillos -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
+
+        <!-- 1. Aguachile -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1535400255456-984241443b29?auto=format&fit=crop&w=800&q=80" alt="Aguachile" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md text-orange-400 font-bold px-3 py-1 rounded-full text-xs border border-orange-500/30">
+                Fresco 🦐
+              </span>
             </div>
-          );
-        })}
-      </section>
-
-      {/* Modal de Gestión Interna */}
-      {modalNegocio && modalNegocio.gestionInterna && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
-            <button
-              onClick={() => setModalNegocio(null)}
-              className="absolute right-4 top-4 text-slate-400 hover:text-white p-1 rounded-lg bg-slate-700/50"
-            >
-              <X className="w-5 h-5" />
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Aguachile Especial</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Camarón fresco bañado en salsa de la casa con pepino y cebolla morada.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$160 MXN</span>
+            <button onclick="agregarItem('Aguachile Especial', 160)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
             </button>
-
-            <div className="mb-6">
-              <span className="text-xs text-cyan-400 font-bold uppercase tracking-wider">Base de Datos de Gestión</span>
-              <h2 className="text-2xl font-bold text-white">{modalNegocio.nombre}</h2>
-            </div>
-
-            {/* Pestañas del Modal */}
-            <div className="flex border-b border-slate-700 mb-6 gap-2">
-              <button
-                onClick={() => setPestanaActiva('inventario')}
-                className={`flex items-center gap-2 pb-3 px-3 font-semibold text-sm transition-all border-b-2 ${
-                  pestanaActiva === 'inventario'
-                    ? 'border-cyan-400 text-cyan-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <Package className="w-4 h-4" />
-                <span>Inventario</span>
-              </button>
-              <button
-                onClick={() => setPestanaActiva('cortes')}
-                className={`flex items-center gap-2 pb-3 px-3 font-semibold text-sm transition-all border-b-2 ${
-                  pestanaActiva === 'cortes'
-                    ? 'border-cyan-400 text-cyan-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <DollarSign className="w-4 h-4" />
-                <span>Cortes de Caja</span>
-              </button>
-              <button
-                onClick={() => setPestanaActiva('metricas')}
-                className={`flex items-center gap-2 pb-3 px-3 font-semibold text-sm transition-all border-b-2 ${
-                  pestanaActiva === 'metricas'
-                    ? 'border-cyan-400 text-cyan-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <BarChart3 className="w-4 h-4" />
-                <span>Métricas</span>
-              </button>
-            </div>
-
-            {/* Contenido según pestaña activa */}
-            {pestanaActiva === 'inventario' && (
-              <div className="space-y-3">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm text-slate-300">
-                    <thead className="bg-slate-900/60 text-slate-400 uppercase text-[11px] font-bold">
-                      <tr>
-                        <th className="p-2.5">Código</th>
-                        <th className="p-2.5">Producto</th>
-                        <th className="p-2.5">Stock</th>
-                        <th className="p-2.5">Costo</th>
-                        <th className="p-2.5">Venta</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-700/50">
-                      {modalNegocio.gestionInterna.inventario.map((prod) => (
-                        <tr key={prod.id} className="hover:bg-slate-700/30">
-                          <td className="p-2.5 font-mono text-xs text-cyan-400">{prod.id}</td>
-                          <td className="p-2.5 font-medium text-white">{prod.nombre}</td>
-                          <td className="p-2.5">{prod.stock} pzas</td>
-                          <td className="p-2.5 text-slate-400">\${prod.precioCosto.toFixed(2)}</td>
-                          <td className="p-2.5 font-semibold text-emerald-400">\${prod.precioVenta.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {pestanaActiva === 'cortes' && (
-              <div className="space-y-4">
-                {modalNegocio.gestionInterna.cortesDeCaja.map((corte, idx) => (
-                  <div key={idx} className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 space-y-2">
-                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-slate-400 font-mono">Fecha: {corte.fecha}</span>
-                      <span className="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">
-                        {corte.estatusCorte}
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 text-xs pt-2">
-                      <div>
-                        <span className="text-slate-400 block">Ventas Efectivo:</span>
-                        <span className="text-white font-semibold">\${corte.ventasEfectivo.toFixed(2)}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block">Ventas Transferencia:</span>
-                        <span className="text-white font-semibold">\${corte.ventasTransferencia.toFixed(2)}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block">Total Ventas Netas:</span>
-                        <span className="text-emerald-400 font-bold text-sm">\${corte.totalVentasNetas.toFixed(2)}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block">Efectivo Final Caja:</span>
-                        <span className="text-cyan-400 font-bold text-sm">\${corte.efectivoFinalEnCaja.toFixed(2)}</span>
-                      </div>
-                    </div>
-                    <p className="text-[11px] text-slate-400 italic pt-1">
-                      "{corte.observaciones}"
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {pestanaActiva === 'metricas' && (
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 text-center">
-                  <span className="text-2xl font-black text-cyan-400 block">{modalNegocio.gestionInterna.metricas.visitasEnDirectorio}</span>
-                  <span className="text-xs text-slate-400 font-medium">Visitas en Directorio</span>
-                </div>
-                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 text-center">
-                  <span className="text-2xl font-black text-emerald-400 block">{modalNegocio.gestionInterna.metricas.clicsAWhatsApp}</span>
-                  <span className="text-xs text-slate-400 font-medium">Clics a WhatsApp</span>
-                </div>
-                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 text-center">
-                  <span className="text-2xl font-black text-amber-400 block">⭐ {modalNegocio.gestionInterna.metricas.calificacionPromedio}</span>
-                  <span className="text-xs text-slate-400 font-medium">Calificación Promedio</span>
-                </div>
-                <div className="bg-slate-900/60 p-4 rounded-xl border border-slate-700/50 text-center">
-                  <span className="text-2xl font-black text-white block">{modalNegocio.gestionInterna.metricas.totalReseñas}</span>
-                  <span className="text-xs text-slate-400 font-medium">Total de Reseñas</span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-      )}
-    </main>
-  );
-}
+
+        <!-- 2. Platillo Mixto -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80" alt="Platillo Mixto" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md text-amber-400 font-bold px-3 py-1 rounded-full text-xs border border-amber-500/30">
+                Recomendado 🔥
+              </span>
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Platillo Mixto</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Carne asada, chorizo, longaniza, guarnición de frijoles y totopos.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$185 MXN</span>
+            <button onclick="agregarItem('Platillo Mixto', 185)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Carne Asada -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80" alt="Carne Asada" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Carne Asada</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Corte asado al carbón acompañado de cebollitas asadas y chiles toreados.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$150 MXN</span>
+            <button onclick="agregarItem('Carne Asada', 150)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Mojarras -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80" alt="Mojarras" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Mojarra Frita</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Mojarra doradita al término perfecto con ensalada fresca y arroz.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$140 MXN</span>
+            <button onclick="agregarItem('Mojarra Frita', 140)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 5. Milanesa Rellena -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=800&q=80" alt="Milanesa Rellena" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Milanesa Rellena</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Empanizada y rellena de jamón y queso fundido con papas a la francesa.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$135 MXN</span>
+            <button onclick="agregarItem('Milanesa Rellena', 135)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 6. Costilla Frita -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80" alt="Costilla Frita" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Costilla Frita</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Crujiente por fuera y jugosa por dentro con sazón de la casa.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$130 MXN</span>
+            <button onclick="agregarItem('Costilla Frita', 130)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 7. Chiles Rellenos -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group">
+          <div>
+            <div class="h-52 overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?auto=format&fit=crop&w=800&q=80" alt="Chiles Rellenos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="p-5 space-y-2">
+              <h4 class="text-xl font-display font-bold text-white">Chiles Rellenos</h4>
+              <p class="text-xs text-slate-400 leading-relaxed">Capeados tradicionales rellenos de queso o carne con caldillo de tomate.</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0 flex justify-between items-center">
+            <span class="text-orange-400 font-display font-black text-lg">\$110 MXN</span>
+            <button onclick="agregarItem('Chiles Rellenos', 110)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+              + Agregar
+            </button>
+          </div>
+        </div>
+
+        <!-- 8. Micheladas con Camarón (Camaroneras) -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden hover:border-orange-500/50 transition-all flex flex-col justify-between group md:col-span-2 lg:col-span-2">
+          <div class="grid sm:grid-cols-2">
+            <div class="h-52 sm:h-full overflow-hidden relative">
+              <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80" alt="Camaroneras" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 bg-slate-950/80 backdrop-blur-md text-orange-400 font-bold px-3 py-1 rounded-full text-xs border border-orange-500/30">
+                Especialidad 🍻
+              </span>
+            </div>
+            <div class="p-6 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                <h4 class="text-2xl font-display font-bold text-white">Micheladas con Camarón (Camaroneras)</h4>
+                <p class="text-xs text-slate-400 leading-relaxed">Cerveza bien fría preparada con salsas negras, limón, tarro escarchado con chilito y brocheta cargada de camarones frescos.</p>
+              </div>
+              <div class="flex justify-between items-center pt-2 border-t border-slate-800">
+                <span class="text-orange-400 font-display font-black text-xl">\$95 MXN</span>
+                <button onclick="agregarItem('Camaronera (Michelada c/ Camarón)', 95)" class="bg-orange-500 hover:bg-orange-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs transition-colors shadow-md shadow-orange-500/20">
+                  + Agregar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Caja de Pedido Flotante / Interactiva -->
+    <section id="seccion-pedido" class="hidden bg-gradient-to-br from-slate-900 to-slate-950 border-2 border-orange-500/50 rounded-3xl p-6 sm:p-8 space-y-6 max-w-2xl mx-auto shadow-2xl shadow-orange-500/10">
+      <div class="flex justify-between items-baseline border-b border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold text-orange-400 uppercase tracking-widest">Resumen</span>
+          <h3 class="text-2xl font-display font-black text-white">Tu Pedido (<span id="total-articulos">0</span>)</h3>
+        </div>
+        <span class="text-2xl font-display font-black text-orange-400">\$<span id="total-precio">0</span> MXN</span>
+      </div>
+
+      <div id="lista-pedido" class="space-y-3 text-sm font-medium text-slate-300 max-h-60 overflow-y-auto pr-2">
+        <!-- JS inyecta platillos -->
+      </div>
+
+      <button onclick="enviarWhatsApp()" class="w-full bg-gradient-to-r from-orange-500 to-amber-400 hover:from-orange-400 hover:to-amber-300 text-slate-950 font-black py-4 rounded-2xl text-sm transition-all shadow-lg shadow-orange-500/30 uppercase tracking-wider">
+        Pedir ahora por WhatsApp 🚀
+      </button>
+    </section>
+
+    <!-- Ubicación Exacta y Contacto -->
+    <section id="contacto" class="grid md:grid-cols-2 gap-8 pt-8 border-t border-slate-800/80">
+      
+      <div class="bg-slate-900/60 border border-slate-800 p-8 rounded-3xl space-y-4">
+        <span class="text-xs font-bold text-orange-400 uppercase tracking-widest">¿Cómo llegar?</span>
+        <h3 class="text-2xl font-display font-bold text-white">Ubicación Exacta</h3>
+        <p class="text-sm text-slate-300 leading-relaxed">
+          📍 <strong>Calle Puebla núm #8, Barrio de San Ramón</strong>.<br>
+          Nos encuentras bien fácil <em>a un costado del mercadito de San Ramón</em>. ¡Llega sin perderte!
+        </p>
+        <div class="pt-2">
+          <a href="https://wa.me/529620000000?text=Hola,%20quiero%20hacer%20un%20pedido%20a%20domicilio" target="_blank" class="inline-block bg-slate-800 hover:bg-slate-700 text-orange-400 font-bold px-4 py-2.5 rounded-xl text-xs transition-colors border border-orange-500/20">
+            Abrir ubicación en mapa 🗺️
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/60 border border-slate-800 p-8 rounded-3xl space-y-4">
+        <span class="text-xs font-bold text-orange-400 uppercase tracking-widest">Sugerencias & Opiniones</span>
+        <h3 class="text-2xl font-display font-bold text-white">Buzón del Cliente</h3>
+        
+        <form onsubmit="enviarSugerencia(event)" class="space-y-3">
+          <input id="sug-nombre" type="text" placeholder="Tu nombre" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-orange-500">
+          <textarea id="sug-mensaje" required rows="2" placeholder="¿Qué tal te pareció la comida?" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-orange-500 resize-none"></textarea>
+          <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs transition-colors border border-slate-700">
+            Enviar comentario al restaurantero 💬
+          </button>
+        </form>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-900 mt-20 py-8 text-center text-xs text-slate-500 space-y-1">
+    <p>Restaurante "El Buen Sabor" · Barrio de San Ramón</p>
+    <p class="text-[10px] text-slate-600">Desarrollo web local profesional.</p>
+  </footer>
+
+  <!-- Lógica Interactiva en JS -->
+  <script>
+    let carrito = {};
+
+    function agregarItem(nombre, precio) {
+      if (carrito[nombre]) {
+        carrito[nombre].cant += 1;
+      } else {
+        carrito[nombre] = { nombre, precio, cant: 1 };
+      }
+      renderCarrito();
+    }
+
+    function quitarItem(nombre) {
+      if (carrito[nombre].cant > 1) {
+        carrito[nombre].cant -= 1;
+      } else {
+        delete carrito[nombre];
+      }
+      renderCarrito();
+    }
+
+    function renderCarrito() {
+      const seccion = document.getElementById('seccion-pedido');
+      const contenedorLista = document.getElementById('lista-pedido');
+      const txtTotalArticulos = document.getElementById('total-articulos');
+      const txtTotalPrecio = document.getElementById('total-precio');
+
+      const llaves = Object.keys(carrito);
+      if (llaves.length === 0) {
+        seccion.classList.add('hidden');
+        return;
+      }
+
+      seccion.classList.remove('hidden');
+      contenedorLista.innerHTML = '';
+      let totalCant = 0, totalDinero = 0;
+
+      llaves.forEach(nombre => {
+        const item = carrito[nombre];
+        const subtotal = item.precio * item.cant;
+        totalCant += item.cant;
+        totalDinero += subtotal;
+
+        const div = document.createElement('div');
+        div.className = 'flex justify-between items-center bg-slate-950/50 p-3 rounded-xl border border-slate-800/60';
+        div.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="bg-orange-500/20 text-orange-400 font-bold px-2.5 py-1 rounded-lg text-xs">${item.cant}x</span>
+            <span class="text-white font-semibold text-xs sm:text-sm">${item.nombre}</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-orange-400 font-bold text-xs sm:text-sm">$${subtotal}</span>
+            <button onclick="quitarItem('${nombre}')" class="text-slate-500 hover:text-red-400 font-bold text-xs px-1">✕</button>
+          </div>
+        `;
+        contenedorLista.appendChild(div);
+      });
+
+      txtTotalArticulos.innerText = totalCant;
+      txtTotalPrecio.innerText = totalDinero;
+    }
+
+    function enviarWhatsApp() {
+      const llaves = Object.keys(carrito);
+      if (llaves.length === 0) return;
+
+      let totalDinero = 0;
+      let texto = "Hola, quiero hacer el siguiente pedido en El Buen Sabor:\n\n";
+
+      llaves.forEach(nombre => {
+        const item = carrito[nombre];
+        const subtotal = item.precio * item.cant;
+        totalDinero += subtotal;
+        texto += `• ${item.cant}x ${item.nombre} - $${subtotal}\n`;
+      });
+
+      texto += `\n*Total a pagar: $${totalDinero} MXN*\n\n¿Me confirman tiempo y si hay servicio a domicilio?`;
+      window.open(`https://wa.me/529620000000?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+
+    function enviarSugerencia(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('sug-nombre').value || 'Cliente';
+      const mensaje = document.getElementById('sug-mensaje').value;
+
+      const texto = `Hola, les dejo un comentario desde su web:\n\n• De: ${nombre}\n• Mensaje: ${mensaje}`;
+      window.open(`https://wa.me/529620000000?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+  </script>
+</body>
+</html>
