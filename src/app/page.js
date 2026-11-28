@@ -1,567 +1,545 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Fraunces, Plus_Jakarta_Sans, Pacifico } from "next/font/google";
+import {
+  Menu, X, MessageCircle, Phone, MapPin, Clock, Users, Sparkles, PartyPopper, Waves,
+  Lightbulb, Fan, Armchair, Camera, Cake, Heart, GraduationCap, Baby, Gift, Crown,
+  Check, ChevronLeft, ChevronRight, ChevronDown, CalendarDays, Send, Flower2,
+  ShieldCheck, Building2, Briefcase,
+} from "lucide-react";
 
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--f-disp", display: "swap" });
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--f-body", display: "swap" });
-const pacifico = Pacifico({ subsets: ["latin"], weight: "400", variable: "--f-script", display: "swap" });
-
-const WA = "529624213433";
-const NOMBRE = "Marisquería Entre Amigos";
-
-/* FOTOS: cuando el cliente mande las fotos, pega aquí la URL completa de cada una
-   (ej. agua: "https://..."). Si queda vacío se muestra el marcador elegante. */
-const FOTOS = {
-  agua: "", cevc: "", cevp: "", cevm: "", cevk: "", ens: "",
-  coc: "", camp: "", tosa: "", tosc: "",
-  ch2: "", ch4: "", ch6: "", ost: "",
-  al12: "", al20: "", al30: "",
-  mich: "", ref: "", agu: "",
-};
-
-const CATS = [
-  ["all", "Todos"],
-  ["ac", "Aguachiles y Ceviches"],
-  ["ct", "Cócteles y Tostis"],
-  ["co", "Charolas y Ostiones"],
-  ["al", "Alitas"],
-  ["be", "Bebidas"],
+// ===== CONFIG =====
+const BRAND = "Rincón Mágico";
+const TAGLINE = "La Casa del León";
+const CITY = "Chiapas, México";
+const PRICE = "$4,200";
+const PROMO = "del 25 al 29 de octubre";
+const PHONES = [
+  { label: "962 481 9517", wa: "529624819517" },
+  { label: "962 518 6128", wa: "529625186128" },
 ];
-const SABORES = ["BBQ", "Parmesano", "Búfalo", "Miel", "Mango Habanero", "Lemon Pepper"];
-const MIX = "Pulpo, camarones, atún y camarones curtidos con limón";
-const ALD = "Bañadas en el sabor que elijas. Puedes combinar sabores.";
-const M = [
-  { id: "agua", n: "Aguachiles", d: "Elige tu sabor: verde, rojo, negro o mango.", c: "ac", o: [["Verde", 180], ["Rojo", 180], ["Negro", 180], ["Mango", 180]] },
-  { id: "cevc", n: "Ceviche de camarón", d: "Preparado al momento.", c: "ac", o: [["", 160]] },
-  { id: "cevp", n: "Ceviche de pescado", d: "Preparado al momento.", c: "ac", o: [["", 150]] },
-  { id: "cevm", n: "Ceviche mixto", d: "Pescado y camarón.", c: "ac", o: [["", 200]] },
-  { id: "cevk", n: "Ceviche de camarón cocido", d: "Preparado al momento.", c: "ac", o: [["", 200]] },
-  { id: "ens", n: "Ensalada de marisco", d: "Pulpo, camarones, atún y camarones curtidos con limón.", c: "ac", o: [["", 280]] },
-  { id: "coc", n: "Cócteles de camarón", d: "Elige tu tamaño.", c: "ct", o: [["Mediano (Md)", 130], ["Grande (Grd)", 160]] },
-  { id: "camp", n: "Cócteles campechanos", d: "Elige tu tamaño.", c: "ct", o: [["Mediano (Md)", 150], ["Grande (Grd)", 200]] },
-  { id: "tosa", n: "Tosti aguachile", d: "Sobre 1 tostito.", c: "ct", o: [["", 150]] },
-  { id: "tosc", n: "Tosti ceviche", d: "Sobre 1 tostito.", c: "ct", o: [["", 150]] },
-  { id: "ch2", n: "Charola mixta para 1–2 personas", d: MIX + ".", c: "co", star: true, o: [["", 300]] },
-  { id: "ch4", n: "Charola mixta para 4 personas", d: MIX + ".", c: "co", star: true, o: [["", 700]] },
-  { id: "ch6", n: "Charola mixta para 6 personas", d: MIX + " y ceviche de camarón o pescado.", c: "co", star: true, o: [["", 1300]] },
-  { id: "ost", n: "Ostiones en su concha", d: "Preparados. Elige cuántas piezas.", c: "co", o: [["6 piezas", 100], ["12 piezas", 200]] },
-  { id: "al12", n: "12 alitas", d: ALD, c: "al", fl: true, o: [["", 180]] },
-  { id: "al20", n: "20 alitas", d: ALD, c: "al", fl: true, o: [["", 245]] },
-  { id: "al30", n: "30 alitas", d: ALD, c: "al", fl: true, o: [["", 355]] },
-  { id: "mich", n: "Michelada clásica", d: "Bien fría.", c: "be", o: [["", 100]] },
-  { id: "ref", n: "Refrescos embotellados", d: "Elige tu sabor.", c: "be", o: [["Coca-Cola", 25], ["Manzanita", 25], ["Sprite", 25], ["Mirinda", 25]] },
-  { id: "agu", n: "Agua embotellada", d: "", c: "be", o: [["", 10]] },
+// Imagen: pon flyer.jpg en /public
+const waLink = (text, i = 0) => `https://wa.me/${PHONES[i].wa}?text=${encodeURIComponent(text)}`;
+
+const GOLD_TEXT = "bg-gradient-to-r from-amber-200 via-yellow-500 to-amber-600 bg-clip-text text-transparent";
+const GOLD_BTN = "inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-300 via-yellow-500 to-amber-600 px-6 py-3 font-semibold text-black shadow-lg shadow-amber-500/30 transition hover:scale-105";
+const GHOST_BTN = "inline-flex items-center justify-center gap-2 rounded-full border border-amber-400/40 px-6 py-3 font-semibold text-amber-100 transition hover:bg-amber-400/10";
+const CARD = "rounded-2xl border border-amber-400/15 bg-white/[0.04] p-6 transition duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:bg-white/[0.07]";
+
+// ===== DATOS =====
+const links = [
+  ["#paquete", "Paquete"],
+  ["#ambiente", "Ambiente"],
+  ["#eventos", "Eventos"],
+  ["#reservar", "Reservar"],
+  ["#faq", "Preguntas"],
 ];
+const stats = [
+  ["6", "horas de renta"],
+  ["30", "personas con mobiliario"],
+  ["1", "solo paquete"],
+  [PRICE, "MXN precio total"],
+];
+const included = [
+  { icon: Building2, title: "Renta de salón por 6 horas", text: "Tiempo suficiente para recibir a tus invitados, comer, bailar y celebrar sin prisas." },
+  { icon: PartyPopper, title: "Decoración básica", text: "Ambientación elegante en tonos dorados y crema para que tu evento luzca desde el primer momento." },
+  { icon: Armchair, title: "Mobiliario para 30 personas", text: "Mesas y sillas listas para tus invitados, sin que tengas que rentar nada por separado." },
+];
+const ambience = [
+  { icon: Lightbulb, title: "Luces cálidas", text: "Guirnaldas de luces colgantes que crean una atmósfera mágica al caer la noche." },
+  { icon: Flower2, title: "Jardín tropical", text: "Plantas y flores que enmarcan el salón y le dan un toque natural y fresco." },
+  { icon: Waves, title: "Área de alberca", text: "Una alberca con fuente que le da vista y elegancia a todo el espacio." },
+  { icon: Fan, title: "Ventilación", text: "Salón con ventiladores de techo para que todos estén cómodos." },
+  { icon: Sparkles, title: "Cortinas y detalles", text: "Cortinas blancas y acabados cálidos que hacen cada foto especial." },
+  { icon: Camera, title: "Listo para fotos", text: "Rincones pensados para lucirse en fotos y recuerdos inolvidables." },
+];
+const events = [
+  { icon: Crown, name: "XV años" },
+  { icon: Heart, name: "Bodas y aniversarios" },
+  { icon: Cake, name: "Cumpleaños" },
+  { icon: Baby, name: "Baby shower" },
+  { icon: Gift, name: "Bautizos y primeras comuniones" },
+  { icon: GraduationCap, name: "Graduaciones" },
+  { icon: Briefcase, name: "Reuniones y convivios" },
+  { icon: Users, name: "Fiestas familiares" },
+];
+const steps = [
+  { n: "1", title: "Elige tu fecha", text: "Selecciona en el calendario el día que quieres celebrar." },
+  { n: "2", title: "Escríbenos por WhatsApp", text: "Llena el formulario y se abre el chat con tus datos ya escritos." },
+  { n: "3", title: "Confirma tu reservación", text: "Te confirmamos disponibilidad y los pasos para apartar tu fecha." },
+  { n: "4", title: "Celebra en grande", text: "Llega el día y disfruta; el salón ya está listo para ti." },
+];
+const faqs = [
+  { q: "¿Qué incluye el paquete?", a: "Renta del salón por 6 horas, decoración básica y mobiliario para 30 personas." },
+  { q: "¿Cuánto cuesta?", a: "El precio total del paquete es de $4,200 MXN." },
+  { q: "¿Cómo aparto mi fecha?", a: "Escríbenos por WhatsApp a cualquiera de los dos números o llena el formulario de esta página y te confirmamos disponibilidad." },
+  { q: "¿Cuántas horas puedo usar el salón?", a: "El paquete contempla 6 horas de renta." },
+  { q: "¿Y si somos más de 30 personas?", a: "El paquete incluye mobiliario para 30 personas. Escríbenos por WhatsApp para ver opciones si necesitas más lugares." },
+  { q: "¿Cómo es la decoración?", a: "La decoración básica va en tonos dorados y crema, como la decoración de referencia del flyer. Pregúntanos por WhatsApp para ver opciones." },
+  { q: "¿Hasta cuándo está la promoción?", a: "La promoción del flyer es del 25 al 29 de octubre. Escríbenos para confirmar si sigue vigente." },
+];
+const eventTypes = ["XV años", "Boda o aniversario", "Cumpleaños", "Baby shower", "Bautizo o comunión", "Graduación", "Reunión o convivio", "Otro"];
+const MONTHS = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+const DAYS = ["D", "L", "M", "M", "J", "V", "S"];
 
-const fmt = (n) => "$" + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-const wa = (t) => `https://wa.me/${WA}?text=${encodeURIComponent(t)}`;
-const nombreItem = (m, l, fl) => (m.fl ? `${m.n} — sabores: ${fl.join(", ")}` : l ? `${m.n} (${l})` : m.n);
-
-function Helm({ size = 32 }) {
+// ===== COMPONENTES =====
+function SectionTitle({ kicker, title, text }) {
   return (
-    <svg viewBox="-110 -110 220 220" width={size} height={size} fill="none" stroke="currentColor" strokeLinecap="round" aria-hidden="true">
-      <circle r="60" strokeWidth="10" />
-      <circle r="15" strokeWidth="8" />
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
-        <g key={a} transform={`rotate(${a})`}>
-          <path d="M0 -15V-94" strokeWidth="9" />
-          <circle cy="-100" r="8" fill="currentColor" stroke="none" />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function Foto({ url, cat, label, star }) {
-  return (
-    <div className="fw">
-      <div
-        className={"foto" + (url ? "" : " ph ph-" + cat)}
-        style={url ? { backgroundImage: `url(${url})` } : undefined}
-        role="img"
-        aria-label={label}
-      >
-        {!url && (
-          <>
-            <span className="phi"><Helm size={46} /></span>
-            <span className="pht">Foto próximamente</span>
-          </>
-        )}
-      </div>
-      {star && <span className="badge">Ideal para compartir</span>}
+    <div className="mx-auto max-w-2xl text-center">
+      <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">{kicker}</p>
+      <h2 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">{title}</h2>
+      {text && <p className="mt-3 text-white/60">{text}</p>}
+      <div className="mx-auto mt-5 h-px w-24 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
     </div>
   );
 }
 
-function Card({ m, i, idx, fl, shake, onPick, onFlavor, onAdd, onNeed }) {
-  const multi = m.o.length > 1;
-  const diff = new Set(m.o.map((o) => o[1])).size > 1;
-  const [l, p] = m.o[idx];
-  const falta = m.fl && fl.length === 0;
+function Navbar() {
+  const [open, setOpen] = useState(false);
   return (
-    <article className={"card" + (m.star ? " star" : "")} style={{ animationDelay: Math.min(i, 12) * 55 + "ms" }}>
-      <Foto url={FOTOS[m.id]} cat={m.c} label={m.n} star={m.star} />
-      <div className="cb">
-        <div className="row">
-          <h3>{m.n}</h3>
-          <span className="pill">{fmt(p)}</span>
+    <header className="fixed top-0 z-50 w-full border-b border-amber-400/10 bg-black/60 backdrop-blur-xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <a href="#" className="flex items-center gap-2">
+          <Crown className="text-amber-400" size={22} />
+          <span className={`${GOLD_TEXT} font-serif text-xl font-bold`}>{BRAND}</span>
+        </a>
+        <nav className="hidden items-center gap-7 md:flex">
+          {links.map(([h, l]) => (
+            <a key={h} href={h} className="text-sm text-white/70 transition hover:text-amber-300">{l}</a>
+          ))}
+          <a href="#reservar" className={`${GOLD_BTN} !px-5 !py-2 text-sm`}>Reserva tu fecha</a>
+        </nav>
+        <button aria-label="Menú" className="md:hidden" onClick={() => setOpen(!open)}>
+          {open ? <X /> : <Menu />}
+        </button>
+      </div>
+      {open && (
+        <div className="border-t border-amber-400/10 bg-black/95 px-4 pb-4 md:hidden">
+          {links.map(([h, l]) => (
+            <a key={h} href={h} onClick={() => setOpen(false)} className="block py-3 text-white/80">{l}</a>
+          ))}
+          <a href="#reservar" onClick={() => setOpen(false)} className={`${GOLD_BTN} mt-2 w-full`}>Reserva tu fecha</a>
         </div>
-        {m.d && <p className="desc">{m.d}</p>}
-        {multi && (
-          <div className="opts" role="group" aria-label={`Opciones de ${m.n}`}>
-            {m.o.map((o, k) => (
-              <button key={o[0]} type="button" className="opt" aria-pressed={k === idx} onClick={() => onPick(m.id, k)}>
-                {o[0]}
-                {diff ? ` · ${fmt(o[1])}` : ""}
-              </button>
-            ))}
+      )}
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative overflow-hidden px-4 pb-24 pt-32">
+      <div className="pointer-events-none absolute -left-40 top-0 h-[28rem] w-[28rem] rounded-full bg-amber-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 top-52 h-[28rem] w-[28rem] rounded-full bg-yellow-600/15 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-16 flex justify-between px-4">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <span key={i} className="h-2 w-2 animate-pulse rounded-full bg-amber-300 shadow-[0_0_14px_4px_rgba(251,191,36,0.6)]" style={{ animationDelay: `${i * 0.25}s`, marginTop: i % 2 ? 14 : 0 }} />
+        ))}
+      </div>
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+        <div className="text-center lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-4 py-1.5 text-xs text-amber-200">
+            <Sparkles size={14} /> Promoción {PROMO}
+          </span>
+          <p className="mt-6 text-sm uppercase tracking-[0.35em] text-white/60">Salón de eventos</p>
+          <h1 className="mt-2 font-serif text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
+            <span className={GOLD_TEXT}>¡Celebra en grande!</span>
+          </h1>
+          <p className="mt-2 font-serif text-2xl text-amber-100/90">{BRAND} · {TAGLINE}</p>
+          <p className="mx-auto mt-5 max-w-lg text-lg text-white/70 lg:mx-0">
+            Tu fiesta en un solo paquete: salón, decoración y mobiliario en un espacio con jardín, luces y mucha magia.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
+            <a href="#reservar" className={GOLD_BTN}><CalendarDays size={18} /> Reserva tu fecha</a>
+            <a href={waLink("Hola, quiero información del paquete del salón Rincón Mágico")} className={GHOST_BTN}>
+              <MessageCircle size={18} /> Escribir por WhatsApp
+            </a>
           </div>
-        )}
-        {m.fl && (
-          <div className={"sab" + (shake === m.id ? " shake" : "")}>
-            <p className="hint">Elige tus sabores (puedes combinar)</p>
-            <div className="opts" role="group" aria-label={`Sabores de ${m.n}`}>
-              {SABORES.map((s) => (
-                <button key={s} type="button" className="opt fl" aria-pressed={fl.includes(s)} onClick={() => onFlavor(m.id, s)}>
-                  {fl.includes(s) ? "✓ " : ""}{s}
-                </button>
+        </div>
+        <div className="relative mx-auto w-full max-w-md">
+          <div className="absolute -inset-2 rounded-[2rem] bg-gradient-to-br from-amber-300/40 via-yellow-600/20 to-transparent blur-xl" />
+          <div className="relative rounded-[2rem] border border-amber-400/40 bg-gradient-to-b from-zinc-900 to-black p-8 text-center shadow-2xl shadow-amber-500/10">
+            <Crown className="mx-auto text-amber-400" size={40} />
+            <p className="mt-3 text-xs uppercase tracking-[0.3em] text-amber-300">Precio total</p>
+            <p className={`${GOLD_TEXT} mt-2 font-serif text-6xl font-bold sm:text-7xl`}>{PRICE}</p>
+            <p className="font-serif text-xl text-amber-100">MXN</p>
+            <ul className="mt-6 space-y-3 text-left">
+              {["Renta de salón por 6 horas", "Decoración básica", "Mobiliario para 30 personas"].map((t) => (
+                <li key={t} className="flex items-center gap-3 text-white/85">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-400/20 text-amber-300"><Check size={14} /></span>
+                  {t}
+                </li>
               ))}
-            </div>
+            </ul>
+            <a href="#reservar" className={`${GOLD_BTN} mt-7 w-full`}>Apartar mi fecha</a>
           </div>
-        )}
-        <div className="acts">
-          <button type="button" className="b-add" onClick={() => onAdd(m, idx)}>Agregar</button>
-          <a
-            className="b-wa"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={falta ? "#" : wa(`Hola, quiero pedir en ${NOMBRE}:\n• 1x ${nombreItem(m, l, fl)} — ${fmt(p)}\n\n¿Me confirman disponibilidad y envío (costo extra)?`)}
-            onClick={(e) => {
-              if (falta) {
-                e.preventDefault();
-                onNeed(m.id);
-              }
-            }}
-          >
-            Pedir ya
-          </a>
         </div>
       </div>
-    </article>
+    </section>
+  );
+}
+
+function Stats() {
+  return (
+    <section className="border-y border-amber-400/10 bg-amber-400/[0.04] px-4 py-10">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 md:grid-cols-4">
+        {stats.map(([n, l]) => (
+          <div key={l} className="text-center">
+            <p className={`${GOLD_TEXT} font-serif text-4xl font-bold`}>{n}</p>
+            <p className="mt-1 text-sm text-white/60">{l}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Package() {
+  return (
+    <section id="paquete" className="px-4 py-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle kicker="Todo en uno" title="Tu fiesta en un solo paquete" text="Sin vueltas ni costos escondidos: esto es lo que incluye." />
+        <div className="mt-14 grid gap-5 md:grid-cols-3">
+          {included.map(({ icon: Icon, title, text }) => (
+            <div key={title} className={CARD}>
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-amber-400/50 bg-black text-amber-300">
+                <Icon size={26} />
+              </div>
+              <h3 className="mt-5 font-serif text-xl font-semibold">{title}</h3>
+              <p className="mt-2 text-sm text-white/60">{text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mx-auto mt-10 flex max-w-3xl flex-col items-center justify-between gap-4 rounded-2xl border border-amber-400/40 bg-gradient-to-r from-amber-400/10 via-transparent to-amber-400/10 p-6 text-center sm:flex-row sm:text-left">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-amber-300">Precio total</p>
+            <p className="font-serif text-3xl font-bold">{PRICE} MXN</p>
+          </div>
+          <p className="max-w-sm text-sm text-white/65">Promoción {PROMO}. Escríbenos para confirmar vigencia y apartar tu fecha.</p>
+          <a href={waLink("Hola, quiero apartar mi fecha en Rincón Mágico")} className={GOLD_BTN}>Apartar ahora</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Ambience() {
+  return (
+    <section id="ambiente" className="bg-white/[0.03] px-4 py-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle kicker="El lugar" title="Un ambiente que enamora" text="Jardín, luces y detalles que convierten tu evento en un recuerdo especial." />
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {ambience.map(({ icon: Icon, title, text }) => (
+            <div key={title} className={CARD}>
+              <Icon className="text-amber-400" size={30} />
+              <h3 className="mt-4 font-serif text-xl font-semibold">{title}</h3>
+              <p className="mt-2 text-sm text-white/60">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Events() {
+  return (
+    <section id="eventos" className="px-4 py-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle kicker="Para cada ocasión" title="¿Qué vas a celebrar?" text="Nuestro salón se adapta a tu evento." />
+        <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {events.map(({ icon: Icon, name }) => (
+            <div key={name} className="group flex flex-col items-center rounded-2xl border border-amber-400/15 bg-white/[0.04] px-4 py-8 text-center transition hover:border-amber-400/60 hover:bg-amber-400/10">
+              <Icon className="text-amber-400 transition group-hover:scale-125" size={34} />
+              <p className="mt-4 font-serif text-lg">{name}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Promo() {
+  return (
+    <section className="bg-white/[0.03] px-4 py-24">
+      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-amber-400">Promoción {PROMO}</p>
+          <h2 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">Aprovecha el paquete completo</h2>
+          <p className="mt-4 text-white/65">
+            Salón, decoración básica y mobiliario para 30 personas por un solo precio. Mira el flyer y reserva tu fecha por WhatsApp.
+          </p>
+          <ul className="mt-6 space-y-3">
+            {["Precio total de " + PRICE + " MXN", "6 horas de renta", "Decoración en tonos dorados", "Atención directa por WhatsApp"].map((t) => (
+              <li key={t} className="flex items-center gap-3 text-white/85"><Check className="text-amber-400" size={18} /> {t}</li>
+            ))}
+          </ul>
+          <div className="mt-8 flex flex-wrap gap-3">
+            {PHONES.map((p, i) => (
+              <a key={p.wa} href={waLink("Hola, quiero reservar el salón Rincón Mágico", i)} className={i === 0 ? GOLD_BTN : GHOST_BTN}>
+                <MessageCircle size={18} /> {p.label}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div className="mx-auto w-full max-w-sm">
+          <img src="/flyer.jpg" alt="Flyer del paquete del salón Rincón Mágico" className="w-full rounded-3xl border border-amber-400/30 shadow-2xl shadow-amber-500/20" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Steps() {
+  return (
+    <section className="px-4 py-24">
+      <div className="mx-auto max-w-6xl">
+        <SectionTitle kicker="Así de fácil" title="Reserva en 4 pasos" />
+        <div className="mt-14 grid gap-5 md:grid-cols-4">
+          {steps.map((s) => (
+            <div key={s.n} className="relative rounded-2xl border border-amber-400/15 bg-white/[0.04] p-6">
+              <span className={`${GOLD_TEXT} font-serif text-5xl font-bold`}>{s.n}</span>
+              <h3 className="mt-3 font-serif text-lg font-semibold">{s.title}</h3>
+              <p className="mt-2 text-sm text-white/60">{s.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Calendar({ today, value, onChange }) {
+  const [view, setView] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+  const y = view.getFullYear();
+  const m = view.getMonth();
+  const offset = new Date(y, m, 1).getDay();
+  const total = new Date(y, m + 1, 0).getDate();
+  const cells = [...Array(offset).fill(null), ...Array.from({ length: total }, (_, i) => i + 1)];
+  const isCurrentMonth = y === today.getFullYear() && m === today.getMonth();
+
+  return (
+    <div className="rounded-2xl border border-amber-400/20 bg-black/40 p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <button type="button" disabled={isCurrentMonth} onClick={() => setView(new Date(y, m - 1, 1))} className="rounded-full p-2 text-amber-300 transition hover:bg-amber-400/10 disabled:opacity-30" aria-label="Mes anterior">
+          <ChevronLeft size={18} />
+        </button>
+        <p className="font-serif text-lg">{MONTHS[m]} {y}</p>
+        <button type="button" onClick={() => setView(new Date(y, m + 1, 1))} className="rounded-full p-2 text-amber-300 transition hover:bg-amber-400/10" aria-label="Mes siguiente">
+          <ChevronRight size={18} />
+        </button>
+      </div>
+      <div className="grid grid-cols-7 gap-1 text-center text-xs text-white/40">
+        {DAYS.map((d, i) => <span key={i} className="py-1">{d}</span>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((d, i) => {
+          if (d === null) return <span key={i} />;
+          const date = new Date(y, m, d);
+          const past = date < today;
+          const selected = value && value.getTime() === date.getTime();
+          return (
+            <button
+              key={i}
+              type="button"
+              disabled={past}
+              onClick={() => onChange(date)}
+              className={`aspect-square rounded-lg text-sm transition ${
+                selected ? "bg-gradient-to-br from-amber-300 to-yellow-600 font-bold text-black" : past ? "text-white/20" : "text-white/85 hover:bg-amber-400/20"
+              }`}
+            >
+              {d}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function Reservation() {
+  const [today, setToday] = useState(null);
+  const [date, setDate] = useState(null);
+  const [name, setName] = useState("");
+  const [type, setType] = useState(eventTypes[0]);
+  const [guests, setGuests] = useState("30");
+  const [notes, setNotes] = useState("");
+  const [phone, setPhone] = useState(0);
+  const [error, setError] = useState("");
+  const [sent, setSent] = useState(false);
+
+  useEffect(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    setToday(d);
+  }, []);
+
+  const dateText = date
+    ? date.toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+    : "";
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (name.trim().length < 2) return setError("Escribe tu nombre.");
+    if (!date) return setError("Elige una fecha en el calendario.");
+    const g = parseInt(guests, 10);
+    if (!g || g < 1) return setError("Escribe cuántos invitados esperas.");
+    setError("");
+    setSent(true);
+    const msg = `Hola, soy ${name}. Quiero reservar el salón Rincón Mágico para ${type} el ${dateText}, con ${g} invitados.${notes.trim() ? " " + notes.trim() : ""}`;
+    window.open(waLink(msg, phone), "_blank");
+  };
+
+  const field = "w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 outline-none transition focus:border-amber-400";
+
+  return (
+    <section id="reservar" className="bg-white/[0.03] px-4 py-24">
+      <div className="mx-auto max-w-5xl">
+        <SectionTitle kicker="Reservación" title="Reserva tu fecha" text="Elige el día, llena tus datos y seguimos por WhatsApp." />
+        {sent ? (
+          <div className="mx-auto mt-12 max-w-lg rounded-2xl border border-amber-400/40 bg-amber-400/10 p-10 text-center">
+            <Check className="mx-auto text-amber-300" size={44} />
+            <p className="mt-3 font-serif text-2xl">¡Solicitud enviada!</p>
+            <p className="mt-2 text-white/65">Se abrió WhatsApp con tus datos. Te confirmamos disponibilidad por ahí.</p>
+            <button className="mt-4 text-sm text-white/60 underline" onClick={() => setSent(false)}>Hacer otra solicitud</button>
+          </div>
+        ) : (
+          <form onSubmit={submit} className="mt-12 grid gap-6 md:grid-cols-2">
+            <div>
+              {today ? <Calendar today={today} value={date} onChange={setDate} /> : <div className="h-72 animate-pulse rounded-2xl bg-white/5" />}
+              <p className="mt-3 flex items-center gap-2 text-sm text-amber-200">
+                <CalendarDays size={16} /> {date ? dateText : "Aún no eliges fecha"}
+              </p>
+            </div>
+            <div className="space-y-4">
+              <input className={field} placeholder="Tu nombre" value={name} onChange={(e) => setName(e.target.value)} />
+              <div className="relative">
+                <select className={`${field} appearance-none`} value={type} onChange={(e) => setType(e.target.value)}>
+                  {eventTypes.map((t) => <option key={t} value={t} className="bg-zinc-900">{t}</option>)}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+              </div>
+              <div>
+                <input className={field} type="number" min="1" placeholder="Número de invitados" value={guests} onChange={(e) => setGuests(e.target.value)} />
+                <p className="mt-1 text-xs text-white/45">El paquete incluye mobiliario para 30 personas. Si son más, confirma por WhatsApp.</p>
+              </div>
+              <textarea className={field} rows={3} placeholder="Notas (colores, tipo de decoración, dudas...)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+              <div>
+                <p className="mb-2 text-sm text-white/60">Enviar a:</p>
+                <div className="flex gap-2">
+                  {PHONES.map((p, i) => (
+                    <button key={p.wa} type="button" onClick={() => setPhone(i)} className={`flex-1 rounded-xl border px-3 py-2 text-sm transition ${phone === i ? "border-amber-400 bg-amber-400/15 text-amber-100" : "border-white/10 text-white/60 hover:border-amber-400/40"}`}>
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              {error && <p className="text-sm text-red-400">{error}</p>}
+              <button type="submit" className={`${GOLD_BTN} w-full`}><Send size={18} /> Enviar solicitud por WhatsApp</button>
+            </div>
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function Faq() {
+  const [open, setOpen] = useState(0);
+  return (
+    <section id="faq" className="px-4 py-24">
+      <div className="mx-auto max-w-3xl">
+        <SectionTitle kicker="Dudas" title="Preguntas frecuentes" />
+        <div className="mt-12 space-y-3">
+          {faqs.map((f, i) => (
+            <div key={f.q} className="rounded-2xl border border-amber-400/15 bg-white/[0.04]">
+              <button className="flex w-full items-center justify-between gap-4 p-5 text-left font-semibold" onClick={() => setOpen(open === i ? null : i)}>
+                {f.q}
+                <ChevronDown size={18} className={`shrink-0 text-amber-400 transition ${open === i ? "rotate-180" : ""}`} />
+              </button>
+              {open === i && <p className="px-5 pb-5 text-white/65">{f.a}</p>}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FinalCta() {
+  return (
+    <section className="px-4 pb-24">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-amber-400/40 bg-gradient-to-br from-amber-400/15 via-black to-amber-600/10 p-10 text-center">
+        <Crown className="mx-auto text-amber-400" size={36} />
+        <h2 className="mt-3 font-serif text-3xl font-bold sm:text-4xl">¡Reserva tu fecha!</h2>
+        <p className="mx-auto mt-3 max-w-lg text-white/65">Escríbenos hoy y celebra en grande en {BRAND}.</p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          {PHONES.map((p, i) => (
+            <a key={p.wa} href={waLink("Hola, quiero reservar el salón Rincón Mágico", i)} className={i === 0 ? GOLD_BTN : GHOST_BTN}>
+              <MessageCircle size={18} /> {p.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-amber-400/10 px-4 py-12">
+      <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <Crown className="text-amber-400" size={22} />
+            <span className={`${GOLD_TEXT} font-serif text-xl font-bold`}>{BRAND}</span>
+          </div>
+          <p className="mt-1 text-sm text-amber-100/80">{TAGLINE}</p>
+          <p className="mt-3 flex items-center gap-2 text-sm text-white/50"><ShieldCheck size={16} /> Tu fiesta en un solo paquete.</p>
+        </div>
+        <div>
+          <p className="font-semibold">Enlaces</p>
+          <ul className="mt-3 space-y-2 text-sm text-white/60">
+            {links.map(([h, l]) => <li key={h}><a href={h} className="hover:text-amber-300">{l}</a></li>)}
+          </ul>
+        </div>
+        <div className="space-y-2 text-sm text-white/60">
+          <p className="font-semibold text-white">Contacto</p>
+          {PHONES.map((p) => (
+            <p key={p.wa} className="flex items-center gap-2"><Phone size={16} /> {p.label}</p>
+          ))}
+          <p className="flex items-center gap-2"><MapPin size={16} /> {CITY}</p>
+          <p className="flex items-center gap-2"><Clock size={16} /> Promoción {PROMO}</p>
+        </div>
+      </div>
+      <p className="mt-10 text-center text-xs text-white/35">© 2026 {BRAND} · {TAGLINE}. Todos los derechos reservados.</p>
+    </footer>
+  );
+}
+
+function FloatingWhatsApp() {
+  return (
+    <a href={waLink("Hola, quiero información del salón Rincón Mágico")} aria-label="WhatsApp" className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg shadow-green-500/40 transition hover:scale-110">
+      <MessageCircle size={28} />
+    </a>
   );
 }
 
 export default function Page() {
-  const [cat, setCat] = useState("all");
-  const [q, setQ] = useState("");
-  const [sel, setSel] = useState({});
-  const [sab, setSab] = useState({});
-  const [cart, setCart] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [toast, setToast] = useState("");
-  const [shake, setShake] = useState("");
-  const [form, setForm] = useState({ nm: "", md: "0", ad: "", nt: "" });
-
-  useEffect(() => {
-    const k = (e) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("keydown", k);
-    return () => window.removeEventListener("keydown", k);
-  }, []);
-
-  const avisar = (t) => {
-    setToast(t);
-    setTimeout(() => setToast(""), 1500);
-  };
-  const need = (id) => {
-    setShake(id);
-    avisar("Elige al menos un sabor");
-    setTimeout(() => setShake(""), 600);
-  };
-  const pick = (id, k) => setSel((s) => ({ ...s, [id]: k }));
-  const flavor = (id, f) =>
-    setSab((s) => {
-      const cur = s[id] || [];
-      const nx = cur.includes(f) ? cur.filter((x) => x !== f) : [...cur, f];
-      return { ...s, [id]: SABORES.filter((x) => nx.includes(x)) };
-    });
-  const add = (m, k) => {
-    const fl = sab[m.id] || [];
-    if (m.fl && fl.length === 0) return need(m.id);
-    const key = [m.id, k, fl.join("+")].join("|");
-    setCart((c) =>
-      c.some((x) => x.key === key)
-        ? c.map((x) => (x.key === key ? { ...x, q: x.q + 1 } : x))
-        : [...c, { key, name: nombreItem(m, m.o[k][0], fl), p: m.o[k][1], q: 1 }]
-    );
-    avisar("Agregado a tu pedido");
-  };
-  const mover = (key, d) => setCart((c) => c.map((x) => (x.key === key ? { ...x, q: x.q + d } : x)).filter((x) => x.q > 0));
-  const quitar = (key) => setCart((c) => c.filter((x) => x.key !== key));
-  const campo = (k) => ({ value: form[k], onChange: (e) => setForm({ ...form, [k]: e.target.value }) });
-
-  const compartir = async () => {
-    const d = { title: NOMBRE, text: "Mira el menú de Marisquería Entre Amigos y pide por WhatsApp:", url: window.location.href };
-    try {
-      if (navigator.share) await navigator.share(d);
-      else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(d.url);
-        avisar("Enlace copiado");
-      }
-    } catch {
-      /* cancelado */
-    }
-  };
-
-  const total = cart.reduce((s, c) => s + c.p * c.q, 0);
-  const count = cart.reduce((s, c) => s + c.q, 0);
-  const dom = form.md === "0";
-  const lista = M.filter((m) => (cat === "all" || m.c === cat) && (m.n + " " + m.d).toLowerCase().includes(q.trim().toLowerCase()));
-  const agrupar = cat === "all" && !q.trim();
-  const orden = Object.fromEntries(lista.map((m, i) => [m.id, i]));
-
-  let msg = `Hola, quiero hacer un pedido en ${NOMBRE} (Tapachula):\n\n` + cart.map((c) => `• ${c.q}x ${c.name} — ${fmt(c.p * c.q)}`).join("\n") + `\n\nSubtotal: ${fmt(total)}\n`;
-  if (dom) msg += "(El envío tiene costo extra, favor de confirmarlo)\n";
-  if (form.nm.trim()) msg += `Nombre: ${form.nm.trim()}\n`;
-  msg += `Entrega: ${dom ? "Envío a domicilio (costo extra)" : "Paso a recogerlo"}` + (dom && form.ad.trim() ? ` — ${form.ad.trim()}` : "") + "\n";
-  if (form.nt.trim()) msg += `Nota: ${form.nt.trim()}\n`;
-  msg += "\n¿Me confirman disponibilidad y tiempo de entrega?";
-
-  const tarjeta = (m) => (
-    <Card key={m.id} m={m} i={orden[m.id]} idx={sel[m.id] || 0} fl={sab[m.id] || []} shake={shake} onPick={pick} onFlavor={flavor} onAdd={add} onNeed={need} />
-  );
-
   return (
-    <div className={`ea ${fraunces.variable} ${jakarta.variable} ${pacifico.variable}`}>
-      <style>{CSS}</style>
-
-      <header className="top">
-        <div className="w bar">
-          <a href="#inicio" className="logo">
-            <span className="terra"><Helm size={32} /></span>
-            <span className="disp">Entre Amigos</span>
-          </a>
-          <nav className="nav">
-            <a href="#promo">Para compartir</a>
-            <a href="#menu">La carta</a>
-            <a href="#contacto">Contacto</a>
-          </nav>
-          <button type="button" className="cartbtn" onClick={() => setOpen(true)} aria-label="Abrir mi pedido">
-            Mi pedido <span className="count" key={count}>{count}</span>
-          </button>
-        </div>
-      </header>
-
-      <main id="inicio">
-        <section className="hero">
-          <div className="sun" aria-hidden="true" />
-          <div className="helmbg" aria-hidden="true"><Helm size={460} /></div>
-          <div className="w in">
-            <p className="script rise" style={{ animationDelay: "0ms" }}>Tapachula, Chiapas</p>
-            <h1 className="rise" style={{ animationDelay: "90ms" }}>Marisquería <span className="gold">Entre Amigos</span></h1>
-            <p className="lead rise" style={{ animationDelay: "180ms" }}>Mariscos frescos, brisa del Pacífico y buena compañía. Pide desde casa o junta a los tuyos.</p>
-            <div className="ctas rise" style={{ animationDelay: "270ms" }}>
-              <a href="#menu" className="btn amber">Ver el menú</a>
-              <a href={wa(`Hola, quiero hacer un pedido en ${NOMBRE}.`)} target="_blank" rel="noopener noreferrer" className="btn green">Pedir por WhatsApp</a>
-            </div>
-          </div>
-          <div className="waves" aria-hidden="true">
-            <svg className="wv w1" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 60Q360 0 720 60T1440 60T2160 60T2880 60V120H0Z" /></svg>
-            <svg className="wv w2" viewBox="0 0 2880 120" preserveAspectRatio="none"><path d="M0 70Q360 20 720 70T1440 70T2160 70T2880 70V120H0Z" /></svg>
-          </div>
-        </section>
-        <div className="strip">
-          <div className="w">
-            <span>Envío a domicilio (costo extra)</span>
-            <span aria-hidden="true">•</span>
-            <span>Pedidos directos al <a href="tel:+529624213433"><u>962 421 3433</u></a></span>
-          </div>
-        </div>
-
-        <section id="promo" className="w promo">
-          <div>
-            <h2>Ideal para compartir entre amigos</h2>
-            <p>Reuniones, comidas largas o pedido desde casa. Nuestras charolas mixtas rinden para 1–2, 4 o 6 personas, y las alitas vienen en paquetes de 12, 20 o 30.</p>
-          </div>
-          <ol className="steps">
-            <li><b>Elige</b><span>tus platillos, tamaños y sabores.</span></li>
-            <li><b>Arma</b><span>tu pedido y agrega una nota si quieres.</span></li>
-            <li><b>Envía</b><span>por WhatsApp y confirmamos tu entrega.</span></li>
-          </ol>
-        </section>
-
-        <section id="menu" className="menu">
-          <div className="w head">
-            <h2>La carta</h2>
-            <span className="line" />
-          </div>
-          <div className="sbar">
-            <div className="w tools">
-              <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar: aguachile, alitas, ostiones..." aria-label="Buscar platillo" />
-              <div className="chips">
-                {CATS.map(([k, t]) => (
-                  <button key={k} type="button" className="chip" aria-pressed={cat === k} onClick={() => setCat(k)}>{t}</button>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="w gridwrap">
-            <div className="grid" key={cat + (q.trim() ? "-b" : "")}>
-              {lista.length === 0 && <p className="empty">No encontramos eso. Prueba otra palabra o toca “Todos”.</p>}
-              {lista.length > 0 && agrupar
-                ? CATS.slice(1).map(([k, t]) => (
-                    <div key={k} className="grp">
-                      <div className="full head">
-                        <h3>{t}</h3>
-                        <span className="line" />
-                      </div>
-                      {M.filter((m) => m.c === k).map(tarjeta)}
-                    </div>
-                  ))
-                : lista.map(tarjeta)}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer id="contacto" className="foot">
-        <div className="w cols">
-          <div>
-            <span className="gold"><Helm size={48} /></span>
-            <p className="disp big2">Marisquería Entre Amigos</p>
-            <p className="soft">Tapachula, Chiapas. Mariscos para compartir.</p>
-          </div>
-          <div>
-            <b className="gold">Pedidos y dudas</b>
-            <a href="tel:+529624213433" className="tel">962 421 3433</a>
-            <a href={wa(`Hola, tengo una duda sobre ${NOMBRE}.`)} target="_blank" rel="noopener noreferrer" className="btn green sm">Escribir por WhatsApp</a>
-          </div>
-          <div>
-            <b className="gold">Envío a domicilio</b>
-            <p className="soft">Disponible con costo extra.</p>
-            <button type="button" className="btn ghost sm" onClick={compartir}>Compartir esta página</button>
-          </div>
-        </div>
-        <p className="legal">Precios en pesos mexicanos. Sujetos a cambio sin previo aviso.</p>
-      </footer>
-
-      {count > 0 && !open && (
-        <button type="button" className="fbar" onClick={() => setOpen(true)}>
-          <span className="fl-l"><span className="fl-n" key={count}>{count}</span>{count === 1 ? "producto" : "productos"}</span>
-          <span>Ver pedido · {fmt(total)}</span>
-        </button>
-      )}
-      {toast && <div className="toast" role="status">{toast}</div>}
-
-      <div className={"ov" + (open ? " on" : "")} onClick={() => setOpen(false)} />
-      <aside className={"cart" + (open ? " on" : "")} role="dialog" aria-modal="true" aria-label="Mi pedido" aria-hidden={!open}>
-        <div className="chead">
-          <h2>Mi pedido</h2>
-          <button type="button" className="x" onClick={() => setOpen(false)} aria-label="Cerrar">✕</button>
-        </div>
-        <div className="cbody">
-          {cart.length === 0 && <p className="soft2">Tu pedido está vacío. Agrega algo de la carta.</p>}
-          {cart.map((c) => (
-            <div key={c.key} className="li">
-              <div>
-                <b>{c.name}</b>
-                <br />
-                <small>{fmt(c.p)} c/u · </small>
-                <button type="button" className="rm" onClick={() => quitar(c.key)}>Quitar</button>
-              </div>
-              <div className="qty">
-                <button type="button" onClick={() => mover(c.key, -1)} aria-label="Quitar uno">−</button>
-                <b>{c.q}</b>
-                <button type="button" onClick={() => mover(c.key, 1)} aria-label="Agregar uno">+</button>
-              </div>
-            </div>
-          ))}
-          <div className="form">
-            <label>Tu nombre<input autoComplete="name" {...campo("nm")} /></label>
-            <label>¿Cómo lo quieres?
-              <select {...campo("md")}>
-                <option value="0">Envío a domicilio (costo extra)</option>
-                <option value="1">Paso a recogerlo</option>
-              </select>
-            </label>
-            {dom && <label>Dirección y referencias<textarea rows={2} {...campo("ad")} /></label>}
-            <label>Nota para tu pedido (opcional)<textarea rows={2} placeholder="Sin cebolla, bien picoso, etc." {...campo("nt")} /></label>
-          </div>
-        </div>
-        <div className="cfoot">
-          <div className="tot"><span>Subtotal</span><span>{fmt(total)}</span></div>
-          <p className="soft2">El envío tiene costo extra y se confirma por WhatsApp.</p>
-          <a
-            className="btn green block"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={count ? wa(msg) : "#"}
-            aria-disabled={count === 0}
-            onClick={(e) => count === 0 && e.preventDefault()}
-            style={count === 0 ? { opacity: 0.4, pointerEvents: "none" } : undefined}
-          >
-            Enviar pedido por WhatsApp
-          </a>
-          <button type="button" className="clr" onClick={() => { setCart([]); setOpen(false); }}>Vaciar pedido</button>
-        </div>
-      </aside>
-    </div>
+    <main className="min-h-screen scroll-smooth bg-[#0a0806] text-white">
+      <Navbar />
+      <Hero />
+      <Stats />
+      <Package />
+      <Ambience />
+      <Events />
+      <Promo />
+      <Steps />
+      <Reservation />
+      <Faq />
+      <FinalCta />
+      <Footer />
+      <FloatingWhatsApp />
+    </main>
   );
 }
-
-const CSS = `
-html{scroll-behavior:smooth;scroll-padding-top:130px}
-.ea{--mar:#0B2F4A;--mar2:#164E73;--arena:#F7EDDC;--crema:#FFFAF1;--terra:#C8452B;--coral:#E8644A;--oro:#E0A526;--ver:#16A34A;--txt:#1F2A33;--gris:#6B7280;--bord:#EADBC3;background:var(--arena);color:var(--txt);font-family:var(--f-body),system-ui,sans-serif;font-size:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}
-.ea *,.ea *::before,.ea *::after{box-sizing:border-box}
-.ea h1,.ea h2,.ea h3,.ea p{margin:0}
-.ea h1,.ea h2,.ea h3,.disp{font-family:var(--f-disp),Georgia,serif;color:var(--mar)}
-.ea a{color:inherit;text-decoration:none}
-.ea button{font:inherit;cursor:pointer;transition:transform .15s,background .2s,color .2s,border-color .2s,box-shadow .2s}
-.ea button:active,.btn:active,.b-wa:active{transform:scale(.95)}
-.ea svg{display:block}
-.ea :focus-visible{outline:3px solid var(--oro);outline-offset:2px}
-.w{max-width:1152px;margin:0 auto;padding:0 16px}
-.terra{color:var(--terra)}.gold{color:var(--oro)}
-@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-@keyframes drift{to{transform:translateX(-50%)}}
-@keyframes bump{35%{transform:scale(1.35)}}
-@keyframes sunp{50%{transform:scale(1.06);opacity:.95}}
-@keyframes shk{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-@keyframes pop{from{opacity:0;transform:translate(-50%,30px) scale(.92)}}
-@keyframes tin{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-@keyframes glow{50%{box-shadow:0 0 0 6px rgba(224,165,38,.25)}}
-.rise{animation:up .7s both cubic-bezier(.2,.7,.2,1)}
-.top{position:sticky;top:0;z-index:30;background:rgba(247,237,220,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--bord)}
-.bar{height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:20px}
-.logo .disp{font-weight:900}
-.nav{display:none;gap:28px;font-size:14px;font-weight:600;color:var(--gris)}
-.nav a{position:relative}.nav a:hover{color:var(--mar)}
-@media(min-width:768px){.nav{display:flex}}
-.cartbtn{background:var(--mar);color:#fff;border:0;border-radius:99px;padding:8px 8px 8px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
-.cartbtn:hover{background:var(--mar2)}
-.count{background:var(--terra);min-width:26px;height:24px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;padding:0 6px;animation:bump .4s}
-.hero{position:relative;overflow:hidden;background:linear-gradient(180deg,#0B2F4A 0%,#164E73 62%,#2C7A92 100%);color:#fff}
-.sun{position:absolute;right:6%;top:60px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFD27A,#E0A526 45%,#E8644A 100%);opacity:.9;animation:sunp 7s ease-in-out infinite}
-.helmbg{position:absolute;left:-150px;top:-60px;color:rgba(255,255,255,.05);pointer-events:none}
-.hero .in{position:relative;padding-top:72px;padding-bottom:150px}
-.script{font-family:var(--f-script),cursive;color:var(--oro);font-size:24px;margin-bottom:6px}
-.hero h1{color:#FFF6E6;font-weight:900;font-size:clamp(44px,9vw,92px);line-height:1;max-width:860px;letter-spacing:-.01em}
-.lead{margin-top:24px;font-size:19px;color:#dbe7ef;max-width:540px}
-.ctas{margin-top:34px;display:flex;flex-wrap:wrap;gap:12px}
-.btn{display:inline-block;border-radius:14px;padding:14px 28px;font-weight:800;border:0;text-align:center;transition:transform .15s,background .2s,box-shadow .2s}
-.btn:hover{transform:translateY(-2px);box-shadow:0 10px 22px -10px rgba(0,0,0,.5)}
-.btn.sm{padding:10px 16px;font-weight:700;margin-top:12px}
-.btn.amber{background:var(--oro);color:var(--mar)}.btn.amber:hover{background:#f0b63a}
-.btn.green{background:var(--ver);color:#fff}.btn.green:hover{background:#15803D}
-.btn.ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}.btn.ghost:hover{background:#fff;color:var(--mar)}
-.btn.block{display:block;width:100%}
-.waves{position:absolute;left:0;right:0;bottom:-1px;height:96px;overflow:hidden}
-.wv{position:absolute;bottom:0;left:0;width:200%;height:100%;animation:drift 16s linear infinite}
-.w1{fill:var(--arena)}.w2{fill:rgba(247,237,220,.35);animation-duration:26s;animation-direction:reverse}
-.strip{background:var(--terra);color:#fff;font-weight:700;font-size:15px}
-.strip .w{padding-top:12px;padding-bottom:12px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;text-align:center}
-.promo{padding-top:60px;padding-bottom:56px;display:grid;gap:32px;align-items:center}
-.promo h2{font-weight:900;font-size:clamp(30px,5vw,46px);line-height:1.1}
-.promo p{margin-top:16px;font-size:18px;color:var(--gris);max-width:560px}
-.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
-.steps li{counter-increment:s;background:var(--crema);border:1px solid var(--bord);border-radius:16px;padding:14px 16px 14px 60px;position:relative;box-shadow:0 1px 2px #0001;transition:transform .2s}
-.steps li:hover{transform:translateX(4px)}
-.steps li::before{content:counter(s);position:absolute;left:14px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:var(--terra);color:#fff;font-weight:800;display:grid;place-items:center}
-.steps b{font-family:var(--f-disp),serif;color:var(--mar);font-size:18px;margin-right:6px}
-.steps span{color:var(--gris);font-size:15px}
-@media(min-width:768px){.promo{grid-template-columns:1fr 1fr;gap:48px}}
-.menu{padding-bottom:90px}
-.head{display:flex;align-items:center;gap:16px}
-.head h2{font-weight:900;font-size:clamp(32px,5vw,48px)}
-.head h3{font-weight:800;font-size:26px}
-.line{height:2px;flex:1;background:linear-gradient(90deg,var(--terra),transparent)}
-.sbar{position:sticky;top:64px;z-index:20;background:rgba(247,237,220,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--bord);margin-top:20px;padding:12px 0}
-.tools{display:flex;flex-direction:column;gap:12px}
-.tools input{width:100%;border:1px solid #d9c6a6;background:var(--crema);border-radius:12px;padding:10px 16px;font:inherit;color:var(--txt);transition:border-color .2s,box-shadow .2s}
-.tools input:focus{outline:none;border-color:var(--mar);box-shadow:0 0 0 3px rgba(11,47,74,.12)}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.chip{white-space:nowrap;border:1px solid #d9c6a6;background:var(--crema);border-radius:99px;padding:8px 16px;font-weight:600;font-size:14px;color:var(--mar)}
-.chip:hover{border-color:var(--mar);transform:translateY(-1px)}
-.chip[aria-pressed="true"]{background:var(--mar);color:#fff;border-color:var(--mar);box-shadow:0 6px 14px -8px var(--mar)}
-@media(min-width:768px){.tools{flex-direction:row;align-items:center}.tools input{width:300px}}
-.gridwrap{margin-top:34px}
-.grid,.grp{display:contents}
-.gridwrap .grid{display:grid;gap:30px 22px;grid-template-columns:1fr}
-@media(min-width:640px){.gridwrap .grid{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:1024px){.gridwrap .grid{grid-template-columns:repeat(3,1fr)}}
-.full{grid-column:1/-1;margin-top:26px}
-.grp:first-child .full{margin-top:0}
-.empty{grid-column:1/-1;text-align:center;padding:40px;border:1px dashed #cdb892;border-radius:16px;color:var(--gris)}
-.card{position:relative;background:var(--crema);border:1px solid var(--bord);border-radius:20px;padding:12px;display:flex;flex-direction:column;box-shadow:0 2px 6px rgba(80,50,10,.06);animation:up .6s both cubic-bezier(.2,.7,.2,1);transition:transform .25s,box-shadow .25s}
-.card:hover{transform:translateY(-5px);box-shadow:0 18px 36px -18px rgba(80,50,10,.35)}
-.card.star{border:2px solid var(--terra);box-shadow:0 14px 34px -16px rgba(200,69,43,.55)}
-.fw{position:relative}
-.foto{aspect-ratio:4/3;border-radius:14px;background-size:cover;background-position:center;overflow:hidden;position:relative}
-.ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:rgba(11,47,74,.5)}
-.ph::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.18) 0 12px,transparent 12px 24px);transition:transform .5s}
-.card:hover .ph::before{transform:scale(1.15) rotate(2deg)}
-.phi,.pht{position:relative}
-.pht{font-size:12px;font-weight:700;letter-spacing:.04em}
-.ph-ac{background:linear-gradient(135deg,#BFE3DF,#7FB8C4)}
-.ph-ct{background:linear-gradient(135deg,#F9DDB0,#EDA46B)}
-.ph-co{background:linear-gradient(135deg,#F6BFA9,#DF7A5B)}
-.ph-al{background:linear-gradient(135deg,#F8E1A0,#E0A526)}
-.ph-be{background:linear-gradient(135deg,#D3E2EF,#86AACB)}
-.badge{position:absolute;top:10px;left:10px;background:var(--oro);color:var(--mar);font-size:12px;font-weight:800;padding:4px 12px;border-radius:99px;animation:glow 2.4s infinite}
-.cb{padding:14px 6px 6px;display:flex;flex-direction:column;flex:1}
-.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.row h3{font-weight:800;font-size:20px;line-height:1.2}
-.pill{flex-shrink:0;background:var(--terra);color:#fff;font-weight:800;font-size:18px;border-radius:99px;padding:2px 13px}
-.desc{margin-top:8px;font-size:14px;color:var(--gris);flex:1}
-.hint{margin-top:14px;font-size:13px;font-weight:700;color:var(--mar)}
-.sab.shake{animation:shk .5s}
-.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.opt{border:1px solid #d9c6a6;background:#fff;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:600;color:var(--mar)}
-.opt:hover{border-color:var(--mar);transform:translateY(-1px)}
-.opt[aria-pressed="true"]{background:var(--mar);color:#fff;border-color:var(--mar)}
-.opt.fl[aria-pressed="true"]{background:var(--terra);border-color:var(--terra)}
-.acts{display:grid;grid-template-columns:3fr 2fr;gap:8px;margin-top:16px}
-.b-add{background:var(--mar);color:#fff;border:0;border-radius:12px;padding:11px;font-weight:700}.b-add:hover{background:var(--mar2);box-shadow:0 8px 16px -10px var(--mar)}
-.b-wa{background:var(--ver);color:#fff;border-radius:12px;padding:11px;font-weight:700;font-size:14px;text-align:center;transition:transform .15s,background .2s}.b-wa:hover{background:#15803D;transform:translateY(-1px)}
-.foot{background:linear-gradient(180deg,#0B2F4A,#071E31);color:#fff}
-.cols{padding-top:56px;padding-bottom:56px;display:grid;gap:40px}
-@media(min-width:768px){.cols{grid-template-columns:repeat(3,1fr)}}
-.big2{font-weight:900;font-size:24px;margin-top:12px;color:#fff}
-.soft{color:#cbd5e1;margin-top:8px}
-.foot b{font-weight:800;display:block}
-.tel{display:block;margin-top:8px;font-size:24px;font-weight:800}
-.legal{text-align:center;color:#94a3b8;font-size:14px;padding:0 16px 100px}
-.fbar{position:fixed;z-index:30;left:50%;transform:translateX(-50%);bottom:16px;width:min(560px,calc(100% - 24px));display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--mar);color:#fff;border:2px solid var(--oro);border-radius:18px;padding:12px 18px;font-weight:800;box-shadow:0 14px 30px -8px rgba(0,0,0,.5);animation:pop .45s both cubic-bezier(.2,.9,.3,1.2)}
-.fbar:hover{background:var(--mar2)}
-.ea .fbar:active{transform:translateX(-50%) scale(.97)}
-.fl-l{display:flex;align-items:center;gap:8px;font-weight:600}
-.fl-n{background:var(--oro);color:var(--mar);min-width:28px;height:28px;border-radius:99px;display:inline-grid;place-items:center;font-weight:900;animation:bump .45s}
-.ov{position:fixed;inset:0;background:rgba(4,20,34,.6);z-index:40;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
-.ov.on{opacity:1;visibility:visible}
-.cart{position:fixed;z-index:50;left:0;right:0;bottom:0;max-height:92vh;background:var(--arena);border-radius:24px 24px 0 0;display:flex;flex-direction:column;transform:translateY(100%);visibility:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),visibility .35s}
-.cart.on{transform:none;visibility:visible}
-@media(min-width:640px){.cart{top:0;left:auto;width:430px;max-height:none;border-radius:0;transform:translateX(100%)}}
-.chead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--bord)}
-.chead h2{font-weight:900;font-size:26px}
-.x{width:40px;height:40px;border-radius:50%;border:1px solid #d9c6a6;background:#fff}
-.x:hover{background:var(--mar);color:#fff}
-.cbody{flex:1;overflow-y:auto;padding:16px 20px}
-.li{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px dashed #cdb892;animation:up .35s both}
-.li small{color:var(--gris)}
-.rm{background:none;border:0;padding:0;color:var(--terra);font-weight:700;font-size:13px;text-decoration:underline}
-.qty{display:flex;align-items:center;gap:8px}
-.qty button{width:32px;height:32px;border:1px solid #d9c6a6;background:#fff;border-radius:8px;font-weight:800;color:var(--mar)}
-.qty button:hover{background:var(--mar);color:#fff}
-.form{display:grid;gap:12px;margin-top:20px}
-.form label{display:grid;gap:4px;font-size:14px;font-weight:700}
-.form input,.form select,.form textarea{border:1px solid #d9c6a6;background:#fff;border-radius:8px;padding:8px 12px;font:inherit;font-weight:400;color:var(--txt)}
-.cfoot{padding:16px 20px;border-top:1px solid var(--bord)}
-.tot{display:flex;justify-content:space-between;font-family:var(--f-disp),serif;font-weight:900;font-size:24px;margin-bottom:4px;color:var(--mar)}
-.soft2{font-size:14px;color:var(--gris);margin-bottom:12px}
-.clr{margin-top:8px;width:100%;background:none;border:0;text-decoration:underline;font-weight:600;font-size:14px;color:var(--mar2)}
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:92px;z-index:60;background:var(--mar);color:#fff;font-weight:700;padding:8px 20px;border-radius:99px;animation:tin .3s both}
-@media(max-width:640px){.sun{width:150px;height:150px;top:40px;right:-30px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ea *,.ea *::before{animation:none!important;transition:none!important}}
-`;
